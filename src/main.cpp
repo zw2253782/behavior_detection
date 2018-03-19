@@ -25,6 +25,13 @@ int main( int argc, char** argv )
 {
   startThreads(argc, argv);
 
+
+	/*Start a gstreamer in command line first
+	 * gst-launch-1.0 udpsrc port=6666 !  video/x-h264,width=640,height=480,framerate=10/1,aligment=au,
+	 * stream-format=avc ! avdec_h264 ! avimux ! filesink location=video.h264*/
+  //string path = string("/home/wei/Documents/videos/") + string("LTE_1280_client.raw");
+  //utility::convertFileToVideo(path, 0.0);
+
   return 0;
 }
 
@@ -40,12 +47,12 @@ void startThreads(int argc, char** argv) {
   pthread_t threads[num];
 
   pthread_create (&(threads[0]), NULL, &RemoteController::GstreamerReceiver, dataPool);
-  //pthread_create (&(threads[1]), NULL, &RemoteController::ControlPanel, dataPool);
-  pthread_create (&(threads[1]), NULL, &RemoteController::VideoFrameProcesser, dataPool);
+  pthread_create (&(threads[1]), NULL, &RemoteController::ControlPanel, dataPool);
+  pthread_create (&(threads[2]), NULL, &RemoteController::VideoFrameProcesser, dataPool);
   if (dataPool->use_tcp_) {
-    //pthread_create (&(threads[2]), NULL, &RemoteController::TCPReceiverForCar, dataPool);
+    pthread_create (&(threads[3]), NULL, &RemoteController::TCPReceiverForCar, dataPool);
   } else {
-    pthread_create (&(threads[2]), NULL, &RemoteController::UDPReceiverForCar, dataPool);
+    pthread_create (&(threads[3]), NULL, &RemoteController::UDPReceiverForCar, dataPool);
   }
   for(int i = 0; i < num; ++i) {
     pthread_join(threads[i], NULL);

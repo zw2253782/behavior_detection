@@ -16,7 +16,8 @@ void convertFileToVideoFEC(string raw, double loss_percent) {
   PacketAggregator packetAggregator;
 
   UdpSocket* udpsocket = new UdpSocket(kPacketSize);
-  udpsocket->UdpSocketSetUp("127.0.0.1", 4444);
+  //udpsocket->UdpSocketSetUp("127.0.0.1", 4444);
+  udpsocket->UdpSocketSetUp("192.168.0.106", 4444);
   long packetSize = 1500;
   char* header = new char [RawFrame::requiredSpace];
   char* buffer = new char [1000000];
@@ -49,7 +50,8 @@ void convertFileToVideoFEC(string raw, double loss_percent) {
       FrameAndData frameAndData = packetAggregator.videoFrames.front();
       packetAggregator.videoFrames.pop_front();
       string data = frameAndData.second;
-      udpsocket->SendTo("127.0.0.1", 6666, data);
+      //udpsocket->SendTo("127.0.0.1", 12345, data);
+      udpsocket->SendTo("192.168.0.171", 6666, data);
       usleep(10*1000);
     }
   }

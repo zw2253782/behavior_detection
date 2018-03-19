@@ -84,7 +84,7 @@ void* RemoteController::UDPReceiverForCar(void* param){
 }
 
 //this thread only process data from controller
-/*void* RemoteController::ControlPanel(void* param)
+void* RemoteController::ControlPanel(void* param)
 {
   cout<<"receive controllor Thread"<<endl;
   RemoteController *dataPool = (RemoteController*)param;
@@ -114,7 +114,7 @@ void* RemoteController::UDPReceiverForCar(void* param){
   }
   cout<<"ControlPanel exit"<<endl;
   pthread_exit(NULL);
-}*/
+}
 
 void* RemoteController::VideoFrameProcesser(void* param) {
   RemoteController *dataPool = (RemoteController*)param;
@@ -128,7 +128,7 @@ void* RemoteController::VideoFrameProcesser(void* param) {
       dataPool->packetAggregator.videoFrames.pop_front();
       string data = frame.first.toJson();
       if (dataPool->use_tcp_) {
-        //dataPool->tcpServer_->TcpServerWrite(dataPool->tcpClientSocket, data.c_str(), data.size());
+        dataPool->tcpServer_->TcpServerWrite(dataPool->tcpClientSocket, data.c_str(), data.size());
       } else {
         dataPool->udpsocketCar_->SendTo(dataPool->remoteIPCar, dataPool->remotePortCar, data);
       }
@@ -187,7 +187,7 @@ void* RemoteController::GstreamerReceiver(void* param) {
 }
 
 //this thread process data from the car, which include the image and speed status data.
-/*void* RemoteController::TCPReceiverForCar(void* param){
+void* RemoteController::TCPReceiverForCar(void* param){
   cout<<"Enter TCP Receiver from Car"<<endl;;
   RemoteController *dataPool = (RemoteController*)param;
   dataPool->tcpClientSocket = dataPool->tcpServer_->Accept();
@@ -219,6 +219,6 @@ void* RemoteController::GstreamerReceiver(void* param) {
   delete dataBuffer;
   cout<<"UDPReceiver exit"<<endl;
   pthread_exit(NULL);
-}*/
+}
 
 
