@@ -48,6 +48,14 @@ void FrameData::extractFromFramePacket(const FramePacket& framePacket, int numRe
   this->transmitSequence = framePacket.frameSequence;
   this->K = framePacket.k;
   this->N = framePacket.n;
+  //zw
+   this->eventStart = framePacket.parketeventStart;
+   this->eventEnd = framePacket.parketeventEnd;
+   this->eventType = framePacket.parketeventType;
+   cout << "event start: " << framePacket.parketeventStart <<endl;
+   cout << "event type: " << framePacket.parketeventType <<endl;
+
+   ///////
   if (numReceived < this->K) {
     this->lossRate = 1.0 - double(numReceived)/double(this->N);
   } else {
@@ -76,6 +84,12 @@ string FrameData::toJson() {
   jsonData["lossRate"] = Json::Value(this->lossRate);
   jsonData["bandwidth"] = Json::Value(this->bandwidth);
   jsonData["type"] = Json::Value(utility::FrameDataFromServer);
+
+  //zw
+  jsonData["eventStart"] = (Json::Value::UInt64)this->eventStart;
+  jsonData["eventEnd"] = (Json::Value::UInt64)this->eventEnd;
+  jsonData["eventType"] = Json::Value(this->eventType);
+
   // cout<<jsonData.toStyledString()<<endl;
   // write JSON object to a string
   Json::FastWriter fastWriter;
@@ -98,6 +112,11 @@ void FrameData::fromJson(const std::string& json) {
   this->K = parsedFromString["K"].asUInt();
   this->lossRate = parsedFromString["lossRate"].asDouble();
   this->bandwidth = parsedFromString["bandwidth"].asDouble();
+  //zw
+  this->eventStart = parsedFromString["eventStart"].asUInt64();
+  this->eventEnd = parsedFromString["eventEnd"].asUInt64();
+  this->eventType = parsedFromString["eventType"].asString();
+
 }
 
 
@@ -173,6 +192,12 @@ void FramePacket::fromJson(const string& json) {
   this->k = parsedFromString["k"].asInt();
   this->n = parsedFromString["n"].asInt();
   this->packetLength = parsedFromString["packetLength"].asInt();
+
+  //zw
+  this->parketeventStart = parsedFromString["parketeventStart"].asUInt64();
+  this->parketeventEnd = parsedFromString["parketeventEnd"].asUInt64();
+  this->parketeventType = parsedFromString["parketeventType"].asString();
+
 }
 
 

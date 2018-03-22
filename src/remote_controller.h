@@ -24,7 +24,7 @@ private:
   //meta information, always there
   //mac address of node, and the node type
   bool use_gst_ {true};
-  bool display_video_ {false};
+  bool display_video_ {true};
   bool store_video_ {false};
 
 

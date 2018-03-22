@@ -37,6 +37,13 @@ private:
   uint64_t lastRecord {0}; // time stamp
   uint64_t dataReceived {0}; // byte
   double bandwidth {0.0}; //mbps
+
+  //zw
+  //uint64_t parketeventStart{0};
+  //uint64_t parketeventEnd{0};
+  //string parketeventType{""};
+
+  //
 public:
   deque<pair<FrameData, string>> videoFrames;
 

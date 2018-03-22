@@ -127,6 +127,9 @@ void* RemoteController::VideoFrameProcesser(void* param) {
       pair<FrameData, string> frame = dataPool->packetAggregator.videoFrames.front();
       dataPool->packetAggregator.videoFrames.pop_front();
       string data = frame.first.toJson();
+      //if(frame.first.eventStart>0){
+          cout<<frame.first.eventStart<<endl;
+      //}
       if (dataPool->use_tcp_) {
         dataPool->tcpServer_->TcpServerWrite(dataPool->tcpClientSocket, data.c_str(), data.size());
       } else {
@@ -201,6 +204,8 @@ void* RemoteController::TCPReceiverForCar(void* param){
     Json::Value parsedFromString;
     Json::Reader reader;
     assert(reader.parse(header, parsedFromString));
+    //cout<<parsedFromString<<endl;
+
     int len = parsedFromString["packetLength"].asUInt();
     dataPool->tcpServer_->TcpServerReadN(dataPool->tcpClientSocket, dataBuffer, len);
     string body(dataBuffer, len);

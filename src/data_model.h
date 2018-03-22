@@ -31,7 +31,11 @@ struct FramePacket {
   int k{0};
   int n{0};
   int index{0}; // 0 ... n - 1
-  static const int requiredSpace = 150;
+  static const int requiredSpace = 500;
+  //zw
+  uint64_t parketeventStart{0};
+  uint64_t parketeventEnd{0};
+  string parketeventType{""};
 
   FramePacket();
   FramePacket(uint64_t sendTime, uint32_t frameSequence, int len, int k, int n, int index):
@@ -52,6 +56,11 @@ struct FrameData {
   int K {0};
   double lossRate{0.0};
   double bandwidth{0.0};
+
+  //zw
+  uint64_t eventStart{0};
+  uint64_t eventEnd{0};
+  string eventType{""};
 
   FrameData();
   ~FrameData();

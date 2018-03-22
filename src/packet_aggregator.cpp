@@ -1,9 +1,4 @@
-/*
- * packet_aggregator.cpp
- *
- *  Created on: Nov 13, 2017
- *      Author: lkang
- */
+
 
 #include "packet_aggregator.h"
 
@@ -33,6 +28,7 @@ void PacketAggregator::aggregatePackets(set<PacketAndData, classComp>& videoPack
   assert(sz > 0);
   // it must be the last received to calculate loss rate
   FramePacket samplePkt = (*videoPackets.rbegin()).first;
+  cout<<samplePkt.packetSendTime<<samplePkt.parketeventType<<endl;
   FrameData frameData;
   frameData.extractFromFramePacket(samplePkt, videoPackets.size());
   frameData.bandwidth = this->bandwidth;
@@ -65,6 +61,15 @@ void PacketAggregator::aggregatePackets(set<PacketAndData, classComp>& videoPack
       }
     }
     this->videoFrames.push_back(make_pair(frameData, payload));
+    //zzw
+/*    cout<<"event_start_time: "<<frameData.eventStart<<endl;
+    cout<<"event_end_time: "<<frameData.eventEnd<<endl;
+    cout<<"event_type: "<<frameData.eventType<<endl;
+    cout<<"frameSendTime: "<<frameData.frameSendTime<<endl;
+    cout<<"transmitSequence: "<<frameData.transmitSequence<<endl;*/
+
+
+    //
     return;
   }
 
@@ -138,7 +143,8 @@ void PacketAggregator::insertPacket(FramePacket& header, string& data) {
 
   int sequence = header.frameSequence;
   int k = header.k;
-  // cout<<header.toJson()<<" "<<sequenceCounter.first<<" "<<sequenceCounter.second<<endl;
+  //zw
+  //cout<<header.toJson()<<" "<<endl;
   if (sequenceCounter.first > sequence) {
     return;
   }
@@ -150,12 +156,13 @@ void PacketAggregator::insertPacket(FramePacket& header, string& data) {
     //cout<<"value sequenceCounter.second: " <<sequenceCounter.second<<endl;
     //////
    // cout<<"value n: " <<header.n<<endl;
-    cout<<"package size: " <<data.length()<<endl;
+    //cout<<"package size: " <<data.length()<<endl;
     //////
     ////
     if (sequenceCounter.second == k) {
       // aggregate current one
       aggregatePackets(this->videoPackets, sequence);
+
 
       this->videoPackets.clear();
       sequenceCounter.first ++;
@@ -180,7 +187,7 @@ void PacketAggregator::insertPacket(FramePacket& header, string& data) {
 vector<PacketAndData> PacketAggregator::deaggregatePackets(FrameData& frameData, string& payload, double loss) {
   int sz = frameData.compressedDataSize;
   uint64_t sendTime = frameData.frameSendTime;
-  const int referencePktSize = 2000;
+  const int referencePktSize = 4000;
   // minimize padding
   int k = sz / referencePktSize + (sz % referencePktSize == 0 ? 0 : 1);
   int blockSize = sz / k + (sz % k == 0 ? 0 : 1);
